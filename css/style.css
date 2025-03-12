@@ -1761,6 +1761,88 @@ textarea {
     padding-top: 50px;
 }
 
+/* Add these styles to your style.css file */
+
+/* Wishlist Icon Styles */
+.wishlist-icon {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+    z-index: 10;
+    background-color: rgba(255, 255, 255, 0.7);
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease;
+  }
+  
+  .wishlist-icon:hover {
+    transform: scale(1.1);
+  }
+  
+  .wishlist-img {
+    width: 20px;
+    height: 20px;
+  }
+  
+  /* Wishlist Count Badge */
+  .wishlist-count {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background-color: #ff4757;
+    color: white;
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  /* Empty Wishlist Styling */
+  .empty-wishlist {
+    width: 100%;
+    text-align: center;
+    padding: 40px 20px;
+  }
+  
+  .empty-wishlist p {
+    font-size: 18px;
+    color: #666;
+    margin-bottom: 20px;
+  }
+  
+  /* Wishlist Title Styling */
+  .wishlist-title {
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 28px;
+    color: #333;
+  }
+  
+  /* Pulse Animation for Wishlist Add */
+  @keyframes pulse {
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.2);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+  
+  .pulse {
+    animation: pulse 0.4s ease-in-out;
+  }
+
 /* Wishlist page ends */
 
 

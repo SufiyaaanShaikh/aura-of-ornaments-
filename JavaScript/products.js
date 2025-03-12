@@ -47,65 +47,77 @@ async function fetchProducts() {
 }
 
 // Display products in the product container
+// In your displayProducts function in products.js, update the product card creation:
+
 function displayProducts(products) {
-  const productContainer = document.querySelector(".product-container");
-
-  // Clear existing content but keep the structure
-  productContainer.innerHTML = "";
-
-  // Check if products array is empty
-  if (!products || products.length === 0) {
-    productContainer.innerHTML = `
-      <div class="no-products">
-        <p>No products found. Try different filters.</p>
-      </div>
-    `;
-    return;
-  }
-
-  // Loop through products and create HTML for each
-  products.forEach((product) => {
-    const productCard = document.createElement("div");
-    productCard.className = "product-cards";
-
-    // Format price with Rs. prefix
-    const formattedPrice = `Rs.${product.price}`;
-
-    // Create product card HTML
-    productCard.innerHTML = `
-      <div class="product-img">
-        <span class="wishlist-icon">
-          <img src="images/wishlist.svg" alt="Wishlist Icon" class="wishlist-img">
-        </span>
-        <img src="${product.profilePhoto || "images/product1.jpg"}" alt="${
-      product.name
-    }">
-      </div>
-      <div class="product-content">
-        <h4>${product.category || "Jewelry"}</h4>
-        <h3>${product.name}</h3>
-        <h5>${formattedPrice}</h5>
-        <div class="btn">
-          <a href="#" class="add-to-cart-btn" data-id="${
-            product._id
-          }">Add to cart</a>
+    const productContainer = document.querySelector(".product-container");
+  
+    // Clear existing content but keep the structure
+    productContainer.innerHTML = "";
+  
+    // Check if products array is empty
+    if (!products || products.length === 0) {
+      productContainer.innerHTML = `
+        <div class="no-products">
+          <p>No products found. Try different filters.</p>
         </div>
-      </div>
-    `;
-
-    // Append to container
-    productContainer.appendChild(productCard);
-  });
-
-  // Add event listeners to all "Add to cart" buttons
-  document.querySelectorAll(".add-to-cart-btn").forEach((button) => {
-    button.addEventListener("click", function (e) {
-      e.preventDefault();
-      const productId = this.getAttribute("data-id");
-      addToCart(productId);
+      `;
+      return;
+    }
+  
+    // Loop through products and create HTML for each
+    products.forEach((product) => {
+      const productCard = document.createElement("div");
+      productCard.className = "product-cards";
+      productCard.setAttribute("data-id", product._id); // Add data-id to the product card
+  
+      // Get wishlist status from local storage
+      const wishlistItems = JSON.parse(localStorage.getItem('wishlistItemIds')) || [];
+      const isInWishlist = wishlistItems.includes(product._id);
+      
+      // Format price with Rs. prefix
+      const formattedPrice = `Rs.${product.price}`;
+  
+      // Create product card HTML with conditional wishlist icon
+      productCard.innerHTML = `
+        <div class="product-img">
+          <span class="wishlist-icon">
+            <img src="${isInWishlist ? 'images/red-heart.svg' : 'images/wishlist.svg'}" alt="Wishlist Icon" class="wishlist-img">
+          </span>
+          <img src="${product.profilePhoto || "images/product1.jpg"}" alt="${
+        product.name
+      }">
+        </div>
+        <div class="product-content">
+          <h4>${product.category || "Jewelry"}</h4>
+          <h3>${product.name}</h3>
+          <h5>${formattedPrice}</h5>
+          <div class="btn">
+            <a href="#" class="add-to-cart-btn" data-id="${
+              product._id
+            }">Add to cart</a>
+          </div>
+        </div>
+      `;
+  
+      // Append to container
+      productContainer.appendChild(productCard);
     });
-  });
-}
+  
+    // Add event listeners to all "Add to cart" buttons
+    document.querySelectorAll(".add-to-cart-btn").forEach((button) => {
+      button.addEventListener("click", function (e) {
+        e.preventDefault();
+        const productId = this.getAttribute("data-id");
+        addToCart(productId);
+      });
+    });
+    
+    // Initialize wishlist functionality
+    if (typeof setupWishlistButtons === 'function') {
+      setupWishlistButtons();
+    }
+  }
 
 // Cart Functionality
 function addToCart(productId) {
