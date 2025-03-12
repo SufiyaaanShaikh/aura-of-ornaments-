@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (userIcon) {
         userIcon.addEventListener('click', function () {
-            const isLoggedIn = localStorage.getItem('loggedIn') === 'true';
+            const isLoggedIn = localStorage.getItem('accessToken');
             userDropdown.style.display = userDropdown.style.display === 'block' ? 'none' : 'block';
 
             if (isLoggedIn) {
@@ -28,11 +28,37 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     if (logOutOption) {
-        logOutOption.addEventListener('click', function (e) {
-            e.preventDefault();
-            localStorage.clear();
-            alert('You have been logged out!');
-            window.location.href = "form/sign_in.html"; // Make sure this path is correct
+        document.getElementById("logout").addEventListener("click", async function (event) {
+            event.preventDefault(); // Prevent default link behavior
+        
+            try {
+                const accessToken = localStorage.getItem('accessToken');
+                const response = await fetch("http://localhost:5020/api/auth/logout", {
+                    method: "POST",
+                    credentials: "include",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${accessToken}` 
+                    } // Include cookies in the request
+                });
+        
+                const data = await response.json();
+                console.log(data)
+        
+                if (response.ok) {
+                    alert("Logged out successfully!"); // Remove stored token
+                    localStorage.removeItem("accessToken");
+                    localStorage.removeItem("loggedIn");
+                    localStorage.removeItem("name");
+                    localStorage.removeItem("email");
+                    window.location.href = "../form/sign_in.html"; // Redirect to login page
+                } else {
+                    alert(data.message || "Logout failed. Try again.");
+                }
+            } catch (error) {
+                console.error("Logout error:", error);
+                alert("An error occurred while logging out.");
+            }
         });
     }
 

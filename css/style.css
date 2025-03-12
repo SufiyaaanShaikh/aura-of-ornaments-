@@ -1844,6 +1844,42 @@ textarea {
     color: #000;
 }
 
+/* Cart count badge */
+.cart-count {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background-color: #ff0000;
+    color: white;
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 0px 5px;
+  }
+  
+  /* Position relative to cart icon for badge placement */
+  .icons a {
+    position: relative;
+  }
+  
+  /* Empty cart styles */
+  .empty-cart {
+    text-align: center;
+    padding: 40px 0;
+  }
+  
+  .empty-cart p {
+    margin-bottom: 20px;
+    font-size: 18px;
+    color: #777;
+  }
+
+
 /* Cart page ends */
 
 

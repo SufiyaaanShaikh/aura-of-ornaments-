@@ -42,8 +42,47 @@
         </div>
     </div>
     <!-- form section ends  -->
+    <script>
+        document.getElementById("signIn").addEventListener("submit", async function (event) {
+            event.preventDefault();
 
-    <script src="../JavaScript/script.js"></script>
+            const email = document.getElementById("loginEmail").value;
+            const password = document.getElementById("loginPassword").value;
+
+            const requestBody = {
+                email,
+                password
+            };
+
+            try {
+                const response = await fetch("http://localhost:5020/api/auth/login", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(requestBody)
+                });
+
+                const { data } = await response.json();
+
+                if (response.ok) {
+                    alert("Login successful!");
+                    localStorage.setItem("accessToken", data.accessToken); // Store token for authentication
+                    localStorage.setItem("name", data.name);
+                    localStorage.setItem("email", data.email);
+                    localStorage.setItem("loggedIn", "true");
+                    window.location.href = "../index.html"; // Redirect to dashboard or home page
+                } else {
+                    alert(data.message || "Login failed. Please check your credentials.");
+                }
+            } catch (error) {
+                console.error("Error during login:", error);
+                alert("An error occurred. Please try again later.");
+            }
+        });
+
+    </script>
+    <!-- <script src="../JavaScript/script.js"></script> -->
 </body>
 
 </html>

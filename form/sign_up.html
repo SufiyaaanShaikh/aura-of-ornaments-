@@ -12,7 +12,7 @@
 <body>
 
     <!-- form section starts  -->
-    <div class="form">
+    <div class="form" >
         <div class="form-style">
             <div class="left">
                 <div class="form-container">
@@ -43,9 +43,46 @@
     </div>
     <!-- form section ends  -->
 
+    <script>
+        document.getElementById("signUp").addEventListener("submit", async function (event) {
+            event.preventDefault();
 
+            const name = document.getElementById("name").value;
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("password").value;
 
-    <script src="../JavaScript/script.js"></script>
+            const requestBody = {
+                name,
+                email,
+                password
+            };
+
+            try {
+                const response = await fetch("http://localhost:5020/api/auth/signup", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(requestBody)
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    alert("Account created successfully!");
+                    window.location.href = "../form/sign_in.html"; // Redirect to login page
+                } else {
+                    alert(data.message || "Signup failed. Please try again.");
+                }
+            } catch (error) {
+                console.error("Error during signup:", error);
+                alert("An error occurred. Please try again later.");
+            }
+        });
+
+    </script>
+
+    <!-- <script src="../JavaScript/script.js"></script> -->
 </body>
 
 
