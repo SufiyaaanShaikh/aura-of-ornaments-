@@ -50,10 +50,10 @@
         <div class="section-style">
             <div class="product-detail-container">
                 <div class="product-detail-image">
-                    <span class="wishlist-icon bigger">
+                    <span class="wishlist-icon bigger" id="wishlistIcon">
                         <img src="../images/wishlist.svg" alt="Wishlist Icon" class="wishlist-img">
                     </span>
-                    <img src="../images/product14.webp" alt="Jewelry Product">
+                    <img id="product-img" src="../images/product14.webp" alt="Jewelry Product">
                 </div>
                 <div class="product-details">
                     <h2>Elegant Diamond Ring</h2>
@@ -80,10 +80,10 @@
 
                     <div class="buttons">
                         <div class="btn">
-                            <a href="#">Add to cart</a>
+                            <a href="#" id="addToCartBtn">Add to cart</a>
                         </div>
                         <div class="btn">
-                            <a href="#">Buy Now</a>
+                            <a href="#" id="buyNowBtn">Buy Now</a>
                         </div>
                     </div>
 
@@ -93,9 +93,7 @@
                         <span>Share</span>
                     </div>
                 </div>
-
             </div>
-        </div>
         </div>
     </section>
 
@@ -277,7 +275,154 @@
             </div>
         </div>
     </section>
-    <script src="../JavaScript/script.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", async function () {
+            const urlParams = new URLSearchParams(window.location.search);
+            const productId = urlParams.get("id");
+
+            if (!productId) {
+                document.querySelector(".product-detail-container").innerHTML = "<p>Product not found!</p>";
+                return;
+            }
+
+            try {
+                const response = await fetch(`http://localhost:5020/api/product/${productId}`);
+                if (!response.ok) throw new Error("Product not found");
+
+                const data = await response.json();
+                const product = data.data;
+                console.log(data);
+
+                // Update product details in HTML
+                document.querySelector(".product-detail-image #product-img").src = product.profilePhoto || "../images/product-placeholder.jpg";
+                document.querySelector(".product-details h2").textContent = product.name;
+                document.querySelector(".product-details h4").textContent = `Category: ${product.category || "Jewelry"}`;
+                document.querySelector(".product-details .price").textContent = `Price: Rs.${product.price}`;
+
+                // Add event listeners for "Add to Cart" and "Wishlist" buttons
+                const addToCartBtn = document.getElementById("addToCartBtn");
+                const wishlistIcon = document.getElementById("wishlistIcon");
+
+                if (addToCartBtn) {
+                    addToCartBtn.addEventListener("click", function (e) {
+                        e.preventDefault();
+                        addToCart(productId);
+                    });
+                }
+
+                if (wishlistIcon) {
+                    wishlistIcon.addEventListener("click", function (e) {
+                        e.preventDefault();
+                        toggleWishlistItem(productId, wishlistIcon);
+                    });
+                }
+
+                // Update wishlist icon based on local storage
+                const wishlistItems = JSON.parse(localStorage.getItem('wishlistItemIds')) || [];
+                const isInWishlist = wishlistItems.includes(productId);
+                if (isInWishlist) {
+                    wishlistIcon.querySelector(".wishlist-img").src = "../images/red-heart.svg";
+                } else {
+                    wishlistIcon.querySelector(".wishlist-img").src = "../images/wishlist.svg";
+                }
+
+            } catch (error) {
+                console.error("Error fetching product:", error);
+                document.querySelector(".product-detail-container").innerHTML = "<p>Failed to load product details.</p>";
+            }
+        });
+
+        // Import addToCart and toggleWishlistItem functions from products.js and wishlist.js
+        function addToCart(productId) {
+            if (typeof window.addToCart === 'function') {
+                window.addToCart(productId);
+            } else {
+                console.error("addToCart function not found");
+            }
+        }
+
+        // Updated toggleWishlistItem function to dynamically update the icon
+        async function toggleWishlistItem(productId, wishlistIcon) {
+            try {
+                const token = localStorage.getItem('accessToken');
+                const response = await fetch('http://localhost:5020/api/wishlist/toggle', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        "Authorization": `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ productId })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                const isAdded = data.data.added;
+
+                // Update local storage
+                const wishlistItems = JSON.parse(localStorage.getItem('wishlistItemIds')) || [];
+                if (isAdded) {
+                    if (!wishlistItems.includes(productId)) {
+                        wishlistItems.push(productId);
+                    }
+                } else {
+                    const index = wishlistItems.indexOf(productId);
+                    if (index !== -1) {
+                        wishlistItems.splice(index, 1);
+                    }
+                }
+                localStorage.setItem('wishlistItemIds', JSON.stringify(wishlistItems));
+
+                // Update the wishlist icon dynamically
+                const wishlistImg = wishlistIcon.querySelector(".wishlist-img");
+                if (isAdded) {
+                    wishlistImg.src = "../images/red-heart.svg";
+                    showNotification('Item added to wishlist!');
+                } else {
+                    wishlistImg.src = "../images/wishlist.svg";
+                    showNotification('Item removed from wishlist!');
+                }
+
+            } catch (error) {
+                console.error('Error toggling wishlist item:', error);
+                showNotification('Failed to update wishlist. Please try again.');
+            }
+        }
+
+        // Show notification function
+        function showNotification(message) {
+            const notificationContainer = document.querySelector(".notification-container") || createNotificationContainer();
+            const notification = document.createElement("div");
+            notification.className = "notification";
+            notification.textContent = message;
+
+            notificationContainer.appendChild(notification);
+            setTimeout(() => {
+                notification.classList.add("show");
+            }, 10);
+
+            setTimeout(() => {
+                notification.classList.remove("show");
+                setTimeout(() => {
+                    notification.remove();
+                }, 300);
+            }, 3000);
+        }
+
+        // Create notification container if it doesn't exist
+        function createNotificationContainer() {
+            const container = document.createElement("div");
+            container.className = "notification-container";
+            document.body.appendChild(container);
+            return container;
+        }
+    </script>
+       <script src="../JavaScript/wishlist.js"></script>
+       <script src="../JavaScript/products.js"></script>
+       <script src="../JavaScript/script.js"></script>
+    
 </body>
 
 </html>

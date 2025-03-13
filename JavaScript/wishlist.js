@@ -62,83 +62,73 @@ document.addEventListener('DOMContentLoaded', function() {
   }
   
   // Setup event listeners for wishlist buttons
-  function setupWishlistButtons() {
-    const wishlistButtons = document.querySelectorAll('.wishlist-icon');
-    
-    wishlistButtons.forEach(button => {
-      button.addEventListener('click', function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        
-        if (!isLoggedIn) {
-          showLoginNotification();
-          return;
-        }
-        
-        const productCard = this.closest('.product-cards');
-        const productId = productCard.getAttribute('data-id') || 
-                          productCard.querySelector('.add-to-cart-btn')?.getAttribute('data-id');
-        
-        if (productId) {
-          toggleWishlistItem(productId);
-        } else {
-          console.error('Product ID not found');
-        }
-      });
-    });
-  }
-  
-  // Toggle item in wishlist (add or remove)
-  async function toggleWishlistItem(productId) {
-    try {
-        const token = localStorage.getItem('accessToken');
-      const response = await fetch('http://localhost:5020/api/wishlist/toggle', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          "Authorization": `Bearer ${token}` 
-        },
-        credentials: 'include',
-        body: JSON.stringify({ productId })
-      });
-  
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-  
-      const data = await response.json();
-      
-      // Update local storage and UI
-      updateLocalWishlist(productId, data.data.added);
-      
-      // Update UI
-      const selector = `.product-cards[data-id="${productId}"] .wishlist-img, .product-cards:has([data-id="${productId}"]) .wishlist-img`;
-      const wishlistIcons = document.querySelectorAll(selector);
-      
-      wishlistIcons.forEach(icon => {
-        if (data.data.added) {
-          icon.src = "../images/red-heart.svg";
-          showNotification('Item added to wishlist!');
-        } else {
-          icon.src = "../images/wishlist.svg";
-          showNotification('Item removed from wishlist!');
-          
-          // If on wishlist page, remove the item
-          if (window.location.pathname.includes('wishlist.html')) {
-            const productCard = icon.closest('.product-cards');
-            if (productCard) {
-              productCard.remove();
-              checkEmptyWishlist();
-            }
+  // Setup event listeners for wishlist buttons
+function setupWishlistButtons() {
+  const wishlistButtons = document.querySelectorAll('.wishlist-icon');
+
+  wishlistButtons.forEach(button => {
+      button.addEventListener('click', function (e) {
+          e.preventDefault();
+          e.stopPropagation();
+
+          if (!isLoggedIn) {
+              showLoginNotification();
+              return;
           }
-        }
+
+          const productCard = this.closest('.product-cards');
+          const productId = productCard?.getAttribute('data-id') ||
+              document.querySelector('.product-detail-container')?.getAttribute('data-id');
+
+          if (productId) {
+              toggleWishlistItem(productId, this);
+          } else {
+              console.error('Product ID not found');
+          }
       });
-    } catch (error) {
+  });
+}
+
+// Toggle item in wishlist (add or remove)
+async function toggleWishlistItem(productId, button) {
+  try {
+      const token = localStorage.getItem('accessToken');
+      const response = await fetch('http://localhost:5020/api/wishlist/toggle', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+              "Authorization": `Bearer ${token}`
+          },
+          credentials: 'include',
+          body: JSON.stringify({ productId })
+      });
+
+      if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      const isAdded = data.data.added;
+
+      // Update the UI immediately
+      const wishlistImg = button.querySelector(".wishlist-img");
+      if (isAdded) {
+          wishlistImg.src = "../images/red-heart.svg";
+          showNotification('Item added to wishlist!');
+      } else {
+          wishlistImg.src = "../images/wishlist.svg";
+          showNotification('Item removed from wishlist!');
+      }
+
+      // Update local storage
+      updateLocalWishlist(productId, isAdded);
+
+  } catch (error) {
       console.error('Error toggling wishlist item:', error);
       showNotification('Failed to update wishlist. Please try again.');
-    }
   }
-  
+}
+
   // Update local storage wishlist
   function updateLocalWishlist(productId, isAdding) {
     const wishlistItems = JSON.parse(localStorage.getItem('wishlistItemIds')) || [];

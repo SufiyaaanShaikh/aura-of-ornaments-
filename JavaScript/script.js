@@ -51,6 +51,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     localStorage.removeItem("loggedIn");
                     localStorage.removeItem("name");
                     localStorage.removeItem("email");
+                    localStorage.removeItem('cart');
                     window.location.href = "../form/sign_in.html"; // Redirect to login page
                 } else {
                     alert(data.message || "Logout failed. Try again.");
