@@ -10,13 +10,44 @@
 </head>
 
 <body>
+    <header>
+        <div class="logo invert">
+            <a href="../index.html">
+                <img src="../images/logo.svg" alt="Logo">
+            </a>
+        </div>
+        <div class="menu">
+            <a href="../index.html">Home</a>
+            <a href="../product.html">Product</a>
+            <a href="../services.html">Services</a>
+            <a href="../aboutUs.html">About Us</a>
+            <a href="../contactUs.html">Contact Us</a>
+        </div>
+
+        <div class="icons invert">
+            <div class="user-wrapper" id="userWrapper">
+                <img src="../images/user.svg" alt="user" id="userIcon">
+                <div class="dropdown" id="userDropdown">
+                    <ul class="locations">
+                        <li><a href="../form/sign_in.html" id="signInOption">Sign In</a></li>
+                        <li><a href="../form/sign_up.html" id="signUpOption">Sign Up</a></li>
+                        <li><a href="#" id="logout">Log Out</a></li>
+                    </ul>
+                    <span id="userNameDisplay"></span>
+                </div>
+            </div>
+            <a href="wishlist.html"><img src="../images/wishlist.svg" alt="wishlist"></a>
+            <a href="cart.html"><img src="../images/cart.svg" alt="cart"></a>
+        </div>
+    </header>
+    
     <div id="shipping-section">
         <div class="section-style">
             <div class="shipping-border">
                 <h1>Shipping Details</h1>
                 <div class="shipping-container">
                     <div class="shipping-form-container">
-                        <form>
+                        <form id="shipping-form">
                             <div class="shipping-form-group">
                                 <label for="name">Full Name</label>
                                 <input type="text" id="name" required>
@@ -48,36 +79,7 @@
                         </form>
                     </div>
                     <div class="summary-container">
-                        <h3>Order Summary</h3>
-                        <div class="summary-item">
-                            <img src="../images/heart earrings.webp" alt="Product Image">
-                            <div class="details">
-                                <h3>Heart-Shaped Earrings</h3>
-                                <p>Qty: 1</p>
-                            </div>
-                            <p class="price">Rs.799</p>
-                        </div>
-                        <div class="summary-item">
-                            <img src="../images/product13.webp" alt="Product Image">
-                            <div class="details">
-                                <h3>Triangle Pearl Earring</h3>
-                                <p>Qty: 1</p>
-                            </div>
-                            <p class="price">Rs.499</p>
-                        </div>
-                        <div class="summary-item">
-                            <img src="../images/product14.webp" alt="Product Image">
-                            <div class="details">
-                                <h3>Elegant Diamond Ring</h3>
-                                <p>Qty: 1</p>
-                            </div>
-                            <p class="price">Rs.900</p>
-                        </div>
-                        <div class="total-price">
-                            <p><strong>Subtotal:</strong> Rs.2198</p>
-                            <p><strong>Shipping:</strong> Rs.99</p>
-                            <p><strong>Total:</strong> Rs.2297</p>
-                        </div>
+                        <!-- Order summary will be dynamically inserted here -->
                     </div>
                 </div>
             </div>
@@ -85,7 +87,7 @@
     </div>
 
     <script src="../JavaScript/script.js"></script>
-
+    <script src="../JavaScript/shipping.js"></script>
 </body>
 
 </html>
