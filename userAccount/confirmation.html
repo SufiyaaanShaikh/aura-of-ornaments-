@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/utility.css">
+    <title>Aura Of Ornaments | Order Confirmation</title>
+</head>
+
+<body>
+    <header>
+        <div class="logo invert">
+            <a href="../index.html">
+                <img src="../images/logo.svg" alt="Logo">
+            </a>
+        </div>
+        <div class="menu">
+            <a href="../index.html">Home</a>
+            <a href="../product.html">Product</a>
+            <a href="../services.html">Services</a>
+            <a href="../aboutUs.html">About Us</a>
+            <a href="../contactUs.html">Contact Us</a>
+        </div>
+
+        <div class="icons invert">
+            <div class="user-wrapper" id="userWrapper">
+                <img src="../images/user.svg" alt="user" id="userIcon">
+                <div class="dropdown" id="userDropdown">
+                    <ul class="locations">
+                        <li><a href="../form/sign_in.html" id="signInOption">Sign In</a></li>
+                        <li><a href="../form/sign_up.html" id="signUpOption">Sign Up</a></li>
+                        <li><a href="#" id="logout">Log Out</a></li>
+                    </ul>
+                    <span id="userNameDisplay"></span>
+                </div>
+            </div>
+            <a href="wishlist.html"><img src="../images/wishlist.svg" alt="wishlist"></a>
+            <a href="cart.html"><img src="../images/cart.svg" alt="cart"></a>
+        </div>
+    </header>
+    
+    <div id="confirmation-section">
+        <div class="section-style">
+            <div class="confirmation-border">
+                <div class="confirmation-container">
+                    <div class="confirmation-header">
+                        <img src="../images/success.svg" alt="Success" class="success-icon">
+                        <h1>Order Confirmed!</h1>
+                        <p>Thank you for your purchase. Your order has been successfully placed.</p>
+                    </div>
+                    
+                    <div class="order-details">
+                        <h3>Order Details</h3>
+                        <div id="order-info">
+                            <!-- Order details will be loaded here -->
+                        </div>
+                    </div>
+                    
+                    <div class="confirmation-actions">
+                        <a href="../index.html" class="continue-shopping">Continue Shopping</a>
+                        <a href="../userAccount/orders.html" class="view-orders">View Orders</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../JavaScript/script.js"></script>
+    <script src="../JavaScript/confirmation.js"></script>
+</body>
+
+</html>
